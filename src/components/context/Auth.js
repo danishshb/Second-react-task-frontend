@@ -12,6 +12,7 @@ const AuthenticationContext = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [attachments, setAttachments] = useState([]);
   const [totalUploadedFiles, setTotalUploadedFiles] = useState(0);
+  const [totalUploadedFolder, setTotalUploadedFolder] = useState(0);
   const token = localStorage.getItem('token');
 
   const MAX_ATTACHMENTS = 5;
@@ -102,6 +103,7 @@ const AuthenticationContext = ({ children }) => {
         const res = await axios.get("http://localhost:8080/api/user/info");
         setUserData(res?.data?.user);
         setTotalUploadedFiles(res?.data?.user?.attachments?.length || 0);
+        setTotalUploadedFolder(res?.data?.user?.folders?.length || 0);
       } catch (err) {
         message.error(err?.response?.data?.message);
         console.error(err);
@@ -156,15 +158,14 @@ const AuthenticationContext = ({ children }) => {
 //     throw error;
 //   }
 // }
-const renameAttachment = async (oldFilename, newFilename) => {
+const renameAttachment = async (newFilename, id) => {
   try {
-    await axios.post('http://localhost:8080/api/user/rename', {
-      oldFilename,
+    await axios.post(`http://localhost:8080/api/user/rename/${id}`, {
       newFilename,
     });
     message.success('File renamed successfully.');
      fetchUserInfo(token);
-    clearAttachments();
+     clearAttachments();
   } catch (err) {
     if (err.response && err.response.data && err.response.data.message) {
       message.error(`Error: ${err.response.data.message}`);
@@ -178,7 +179,7 @@ const renameAttachment = async (oldFilename, newFilename) => {
 
 const creatFolder = async (folderName) => {
   try {
-    const response = await axios.post('http://localhost:8080/api/user/create-folder', {
+    const response = await axios.post('http://localhost:8080/api/user/folders/create', {
      folderName
     });
     fetchUserInfo(token)
@@ -206,6 +207,7 @@ const creatFolder = async (folderName) => {
         clearAttachments,
         uploadAttachments,
         totalUploadedFiles,
+        totalUploadedFolder,
         handleDownloadAttachment,
         deleteAttachment,
         renameAttachment,

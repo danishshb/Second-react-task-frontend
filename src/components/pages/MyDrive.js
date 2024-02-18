@@ -4,7 +4,7 @@ import { AuthContext } from '../context/Auth';
 import setAuthToken from '../utils/setAuthToken';
 
 function MyDrive() {
-  const {handleAttachments, userData, totalUploadedFiles, fetchUserInfo, uploadAttachments, handleDownloadAttachment, deleteAttachment, creatFolder, renameAttachment } = useContext(AuthContext)
+  const {handleAttachments, userData, totalUploadedFiles, totalUploadedFolder, fetchUserInfo, uploadAttachments, handleDownloadAttachment, deleteAttachment, creatFolder, renameAttachment } = useContext(AuthContext)
   const [selectedFile, setSelectedFile] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [folderName, setFolderName] = useState("");
@@ -28,10 +28,10 @@ const handleAddNewClick = () => {
 const handleAddClick = () => {
   setShowOptions(!showOptions); 
 };
-const handleRenameAttachment = (filename) => {
-  const newFilename = prompt('Enter the new filename:', filename);
+const handleRenameAttachment = (name, id) => {
+  const newFilename = prompt('Enter the new filename:', name);
   if (newFilename !== null && newFilename !== '') {
-    renameAttachment(filename, newFilename);
+    renameAttachment(newFilename, id);
   }
 };
 
@@ -50,8 +50,9 @@ const handleRenameAttachment = (filename) => {
 const handlecreatFolder=()=>{
   const newfolderName = prompt('Enter the new Folder Name:', folderName)
   if (newfolderName.trim()!==""){
-    creatFolder(newfolderName, folderName);
+    creatFolder(newfolderName);
     setFolderName("")
+    setShowOptions(false);
   }
 }
 
@@ -142,7 +143,7 @@ useEffect(() => {
                     <div className="accordion-item">
                       <h2 className="accordion-header" id="panelsFolders">
                         <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                          <span>Folders</span><span>(2)</span>
+                          <span>Folders</span><span>({totalUploadedFolder})</span>
                         </button>
                       </h2>
                       <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse show" aria-labelledby="panelsFolders">
@@ -167,23 +168,6 @@ useEffect(() => {
                               </div>{/*.listing-item*/}
                             </div>
                           ))}
-                            <div className="col-md-4 col-sm-6">
-                              <div className="listing-item">
-                                <div className="icon-wrapper">
-                                  <span className="icon"><i className="bi bi-folder-fill" /></span>
-                                </div>
-                                <NavLink className={`nav-link d-flex align-items-center mb-1`} to="/folderinner">
-                                 <div className="item-text"><span>Development Data</span></div></NavLink>
-                                <div className="item-action dropdown">
-                                  <Link to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-three-dots-vertical" /></Link>
-                                  <ul className="dropdown-menu dropdown-menu-end border py-0 shadow-sm">
-                                    <li><Link className="dropdown-item" to="#"><i className="bi bi-pencil" /> Rename</Link></li>
-                                    <li><Link className="dropdown-item" to="#"><i className="bi bi-download" /> Download</Link></li>
-                                    <li><Link className="dropdown-item" to="#"><i className="bi bi-trash" /> Delete</Link></li>
-                                  </ul>
-                                </div>
-                              </div>{/*.listing-item*/}
-                            </div>{/*.col-grid*/}
                           </div>{/*..row*/}
                         </div>
                       </div>
@@ -191,7 +175,7 @@ useEffect(() => {
                     <div className="accordion-item">
                       <h2 className="accordion-header" id="panelsFiles">
                         <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                          <span>Files</span><span>{totalUploadedFiles}</span>
+                          <span>Files</span><span>({totalUploadedFiles})</span>
                         </button>
                       </h2>
                       <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse show" aria-labelledby="panelsFiles">
@@ -217,7 +201,7 @@ useEffect(() => {
                                       <Link 
                                         className="dropdown-item" 
                                         to="#" 
-                                        onClick={() => handleRenameAttachment(a.filename)}
+                                        onClick={() => handleRenameAttachment(a.filename, a?._id)}
                                       >
                                         <i className="bi bi-pencil"/> Rename
                                       </Link>
