@@ -32,7 +32,7 @@ const LoginForm = () => {
       );
       const token = res?.data?.token;
       message.success(res?.data?.message);
-      navigate("/dashboard ")
+      navigate("/dashboard ");
       setAuthToken(token);
       localStorage.setItem("token", token);
       navigate(res?.data?.user?.userType === "admin" ? "/users" : "/profile");
@@ -81,15 +81,23 @@ const LoginForm = () => {
                 onChange={handleInputChange}
               />
             </Form.Group>
-
+            <div className="text-center mt-3">
+              <p>
+                <Link to="/forgotpassword">
+                  Forgot Password?
+                </Link>
+              </p>
+            </div>
             <Button variant="primary" type="submit" className="w-100 mt-3">
               Login
             </Button>
             <div className="text-center mt-3">
-              <p>Don't have an account?</p>
-              <Link to="/signup">
-                <Button variant="outline-primary">Sign Up</Button>
-              </Link>
+              <p>
+                Don't have an account?
+                <Link to="/signup">
+                  Sign Up
+                </Link>
+              </p>
             </div>
           </Form>
         </Col>

@@ -11,6 +11,7 @@ import FolderInner from "./components/pages/FolderInner";
 import ProtectedRoutes from "./components/utils/ProtectedRoutes";
 import { AuthContext } from "./components/context/Auth";
 import setAuthToken from "./components/utils/setAuthToken";
+import ForgotPassword from "./components/pages/forgotPassword";
 
 function App() {
   
@@ -34,6 +35,7 @@ function App() {
       <Route path="/profile" element={<Layouts><Profile /></Layouts>} />
       <Route path="/folderinner" element={<Layouts><FolderInner /></Layouts>}/>
       </Route>
+      <Route path="/forgotpassword" element={<ForgotPassword />} />
     </Routes>
   );
 }

@@ -97,10 +97,11 @@ const SignupForm = () => {
               Sign Up
             </Button>
             <div className="text-center mt-3">
-              <p>Already Have Account?</p>
+              <p>Already Have Account?
               <Link to="/">
-                <Button variant="outline-primary">Login</Button>
+                Login
               </Link>
+              </p>
             </div>
           </Form>
         </Col>
