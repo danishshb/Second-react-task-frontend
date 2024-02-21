@@ -6,6 +6,7 @@ import { message } from "antd";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
+  // const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,6 +17,7 @@ const ForgotPassword = () => {
       message.success(
         "Password reset email sent. Check your inbox and spam folder!"
       );
+      // navigate("/resetpassword");
       setEmail("");
     } catch (err) {
       message.error(err?.response?.data?.message);

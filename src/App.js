@@ -12,6 +12,7 @@ import ProtectedRoutes from "./components/utils/ProtectedRoutes";
 import { AuthContext } from "./components/context/Auth";
 import setAuthToken from "./components/utils/setAuthToken";
 import ForgotPassword from "./components/pages/forgotPassword";
+import ResetPassword from "./components/pages/ResetPassword";
 
 function App() {
   
@@ -36,6 +37,7 @@ function App() {
       <Route path="/folderinner" element={<Layouts><FolderInner /></Layouts>}/>
       </Route>
       <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route path="/resetpassword" element={<ResetPassword />} />
     </Routes>
   );
 }

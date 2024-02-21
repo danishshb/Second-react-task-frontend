@@ -81,7 +81,6 @@ const SignupForm = () => {
                 onChange={handleInputChange}
               />
             </Form.Group>
-
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -92,7 +91,6 @@ const SignupForm = () => {
                 onChange={handleInputChange}
               />
             </Form.Group>
-
             <Button variant="primary" type="submit" className="w-100 mt-3">
               Sign Up
             </Button>
