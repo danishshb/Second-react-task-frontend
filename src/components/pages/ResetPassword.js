@@ -8,7 +8,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 const ResetPassword = () => {
   const [changePassword, setChangePassword] = useState({
     newPassword: "",
-    confirmPassword: "",
   });
 
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ const ResetPassword = () => {
       navigate("/");
       setChangePassword({
         newPassword: "",
-        confirmPassword: "",
+
       });
     } catch (err) {
       message.error(err?.response?.data?.message);
@@ -50,7 +49,7 @@ const ResetPassword = () => {
                 onChange={(e) => setChangePassword(e.target.value)}
               />
             </Form.Group>
-            <Form.Group controlId="formBasicConfirmPassword">
+            {/* <Form.Group controlId="formBasicConfirmPassword">
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
                 type="password"
@@ -59,7 +58,7 @@ const ResetPassword = () => {
                 value={changePassword.confirmPassword}
                 onChange={(e) => setChangePassword(e.target.value)}
               />
-            </Form.Group>
+            </Form.Group> */}
             <Button variant="primary" type="submit" className="w-100 mt-3">
               Update Password
             </Button>

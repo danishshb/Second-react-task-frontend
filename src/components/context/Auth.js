@@ -11,12 +11,17 @@ const AuthenticationContext = ({ children }) => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({});
   const [attachments, setAttachments] = useState([]);
+  // const [folders, setFolders] = useState([]);
+  const [folderName, setFolderName] = useState([]);
   const [totalUploadedFiles, setTotalUploadedFiles] = useState(0);
+  const [tuFiles, setTuFiles] = useState(0);
   const [totalUploadedFolder, setTotalUploadedFolder] = useState(0);
+  const [tuFolder, setTuFolder] = useState(0);
   const token = localStorage.getItem('token');
 
   const MAX_ATTACHMENTS = 5;
   const MAX_FILE_SIZE_MB = 50;
+  // const MAX_FOLDER_SIZE_GB = 50; 
 
   const handleAttachments = (files) => {
     if (files?.length > MAX_ATTACHMENTS) {
@@ -33,11 +38,9 @@ const AuthenticationContext = ({ children }) => {
 
     setAttachments(files);
   };
-
   const clearAttachments = () => {
     setAttachments([]);
   };
-
   const uploadAttachments = async (token) => {
     try {
       if (attachments.length === 0) {
@@ -60,7 +63,6 @@ const AuthenticationContext = ({ children }) => {
       message.error(err?.response?.data?.error);
     }
   };
-
   const handleDownloadAttachment = async (fn, fp) => {
     try {
       const filepath = fp?.replace(/^src\\data\\/, "");
@@ -84,7 +86,6 @@ const AuthenticationContext = ({ children }) => {
       console.log(err);
     }
   };
-
   const deleteAttachment = async (filename) => {
     try {
       await axios.delete(`http://localhost:8080/api/user/attachments/${filename}`);
@@ -96,68 +97,21 @@ const AuthenticationContext = ({ children }) => {
       console.error(err);
     }
   };
-  
   const fetchUserInfo = async (token) => {
     if (token) {
       try {
         const res = await axios.get("http://localhost:8080/api/user/info");
         setUserData(res?.data?.user);
         setTotalUploadedFiles(res?.data?.user?.attachments?.length || 0);
+        setTuFiles(res?.data?.user?.attachments?.length || 1)
         setTotalUploadedFolder(res?.data?.user?.folders?.length || 0);
+        setTuFolder(res?.data?.user?.folders?.length || 1)
       } catch (err) {
         message.error(err?.response?.data?.message);
         console.error(err);
       }
     }
   };
-//   const renameFilesAndFolders = async (token, fileId, newName) => {
-//     try {
-//         const response = await axios.post(
-//             `http://localhost:8080/api/user/rename/${fileId}`,
-//             { newName },
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                     'Content-Type': 'application/json'
-//                 }
-//             }
-//         );
-
-//         // Assuming the response from the backend indicates success
-//         if (response.status === 200) {
-//             console.log('File/Folder renamed successfully.');
-//             // You can handle additional logic here if needed
-//         } else {
-//             console.log('Failed to rename file/folder.');
-//             // Handle failure cases here
-//         }
-//     } catch (error) {
-//         console.error('Error occurred while renaming file/folder:', error);
-//         // Handle error cases here
-//     }
-// };
-// const createFolderOnBackend = async function (folderName) {
-//   try {
-//     const response = await fetch('http://localhost:8080/api/user/create', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({ folderName })
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       throw new Error(errorData.message || 'Failed to create folder');
-//     }
-
-//     const responseData = await response.json();
-//     return responseData;
-//   } catch (error) {
-//     console.error('Error creating folder:', error.message);
-//     throw error;
-//   }
-// }
 const renameAttachment = async (newFilename, id) => {
   try {
     await axios.post(`http://localhost:8080/api/user/rename/${id}`, {
@@ -176,18 +130,50 @@ const renameAttachment = async (newFilename, id) => {
     }
   }
 };
-
-const creatFolder = async (folderName) => {
+const clearFolders = () => {
+  setFolderName([]);
+} 
+const creatFolder = async () => {
   try {
     const response = await axios.post('http://localhost:8080/api/user/folders/create', {
-     folderName
+      folderName
     });
-    fetchUserInfo(token)
+    fetchUserInfo(token);
     console.log(response.data);
   } catch (error) {
     console.error('Error renaming file:', error.message);
   }
 };
+const renameFolder = async (id, newFolderName) => {
+  try {
+    const response = await axios.put(`http://localhost:8080/api/user/folders/rename/${id}`, {
+      newFolderName
+    });
+
+    if (response && response.status === 200) {
+      console.log(response.data);
+      message.success('Folder renamed successfully.');
+      await fetchUserInfo(token); 
+      clearFolders();
+    } else {
+      console.error('Error renaming folder:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error renaming folder:', error.message);
+  }
+};
+const deleteFolder = async (name) => {
+  try {
+    await axios.delete(`http://localhost:8080/api/user/folders/delete/${name}`);
+    message.success('Folder deleted successfully.');
+    await fetchUserInfo(token);
+    setFolderName([]);
+  } catch (err) {
+    message.error('Something went wrong.');
+    console.error(err);
+  }
+}
+
 
   const logout = () => {
     setAuthToken();
@@ -207,11 +193,15 @@ const creatFolder = async (folderName) => {
         clearAttachments,
         uploadAttachments,
         totalUploadedFiles,
+        tuFiles,
         totalUploadedFolder,
+        tuFolder,
         handleDownloadAttachment,
         deleteAttachment,
         renameAttachment,
         creatFolder,
+        renameFolder,
+        deleteFolder,
       }}
     >
       {children}

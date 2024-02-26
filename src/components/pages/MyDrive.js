@@ -4,8 +4,10 @@ import { AuthContext } from '../context/Auth';
 import setAuthToken from '../utils/setAuthToken';
 
 function MyDrive() {
-  const {handleAttachments, userData, totalUploadedFiles, totalUploadedFolder, fetchUserInfo, uploadAttachments, handleDownloadAttachment, deleteAttachment, creatFolder, renameAttachment } = useContext(AuthContext)
+  const {handleAttachments, userData, totalUploadedFiles, totalUploadedFolder, fetchUserInfo, uploadAttachments, 
+    handleDownloadAttachment, deleteAttachment, handleFolders, uploadFolders, creatFolder, renameFolder, renameAttachment, deleteFolder } = useContext(AuthContext)
   const [selectedFile, setSelectedFile] = useState(false);
+  // const [selectedFolder, setSelectedFolder] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [folderName, setFolderName] = useState("");
   const token = localStorage.getItem('token');
@@ -13,12 +15,17 @@ function MyDrive() {
 
 const handleChange = (e) => {
   handleAttachments(e.target.files);
+  handleFolders(e.target.folders)
   setSelectedFile(e.target.files.length > 0);
+  // setSelectedFolder(e.target.folder);
   setShowOptions(false);
 };
 const handleUpload = () => {
   uploadAttachments();
+  uploadFolders();
   setSelectedFile(false);
+  // setSelectedFolder(false);
+  setShowOptions(!showOptions);
 };
 const handleAddNewClick = () => {
   if (fileInputRef.current) {
@@ -34,19 +41,6 @@ const handleRenameAttachment = (name, id) => {
     renameAttachment(newFilename, id);
   }
 };
-
-// const handleCreateNewFolder = () => {
-//   const folderName = prompt('Enter the name of the new folder:');
-//   if (folderName) {
-//     createFolderOnBackend(folderName)
-//       .then(() => {
-//         fetchUserInfo();
-//       })
-//       .catch((error) => {
-//         console.error('Error creating folder:', error);
-//       });
-//   }
-// };
 const handlecreatFolder=()=>{
   const newfolderName = prompt('Enter the new Folder Name:', folderName)
   if (newfolderName.trim()!==""){
@@ -55,6 +49,12 @@ const handlecreatFolder=()=>{
     setShowOptions(false);
   }
 }
+const handleRenameFolder = (name, id) => {
+  const newFolderName = prompt('Enter the new Foldername:', name);
+  if (newFolderName !== null && newFolderName.trim() !== '') {
+    renameFolder(id, newFolderName); 
+  }
+};
 
 
 useEffect(() => {
@@ -88,11 +88,10 @@ useEffect(() => {
                   </ol>
                 </div>
                 <div className="add-inner-wrapper">
-                {/* {selectedFile ? (
+                {/* {selectedFolder && (
                         <button className="btn btn-primary rounded-pill shadow-sm" onClick={handleUpload}>
-                          <i className="bi bi-upload" /> Upload
+                          <i className="bi bi-upload" />
                         </button>
-                      ) : (
                         )} */}
                          {selectedFile ? (
                           <button className="dropdown-item" onClick={handleUpload}>
@@ -110,7 +109,7 @@ useEffect(() => {
                                 className="dropdown-item" 
                                 onClick={handleAddNewClick}
                               >
-                                <i class="bi bi-file-plus"/> File
+                                <i class="bi bi-file-plus"/> Upload File
                               </button>
                               </li>
                             <li>
@@ -118,7 +117,7 @@ useEffect(() => {
                                 className="dropdown-item" 
                                 onClick={handlecreatFolder}
                               >
-                                <i class="bi bi-folder-plus"/> New Folder
+                                <i class="bi bi-folder-plus"/> Create Folder
                               </button>
                               </li>
                           </ul>
@@ -160,9 +159,32 @@ useEffect(() => {
                                 <div className="item-action dropdown">
                                   <Link to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-three-dots-vertical" /></Link>
                                   <ul className="dropdown-menu dropdown-menu-end border py-0 shadow-sm">
-                                    <li><Link className="dropdown-item" to="#"><i className="bi bi-pencil" /> Rename</Link></li>
-                                    <li><Link className="dropdown-item" to="#"><i className="bi bi-download" /> Download</Link></li>
-                                    <li><Link className="dropdown-item" to="#"><i className="bi bi-trash" /> Delete</Link></li>
+                                    <li>
+                                      <Link 
+                                        className="dropdown-item" 
+                                        to="#" 
+                                        onClick={() => handleRenameFolder(folder.name, folder?._id)}
+                                      >
+                                          <i className="bi bi-pencil" /> Rename
+                                      </Link>
+                                    </li>
+                                    <li>
+                                      <Link 
+                                        className="dropdown-item" 
+                                        to="#"
+                                      >
+                                        <i className="bi bi-download" /> Download
+                                      </Link>
+                                    </li>
+                                    <li>
+                                      <Link 
+                                        className="dropdown-item" 
+                                        to="#"
+                                        onClick={() => deleteFolder(folder.name, folder?.filePath)}
+                                      >
+                                        <i className="bi bi-trash" /> Delete
+                                      </Link>
+                                    </li>
                                   </ul>
                                 </div>
                               </div>{/*.listing-item*/}
