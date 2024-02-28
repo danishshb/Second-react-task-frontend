@@ -11,8 +11,8 @@ const AuthenticationContext = ({ children }) => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({});
   const [attachments, setAttachments] = useState([]);
-  // const [folders, setFolders] = useState([]);
-  const [folderName, setFolderName] = useState([]);
+  const [folders, setFolders] = useState([]);
+  // const [folderName, setFolderName] = useState([]);
   const [totalUploadedFiles, setTotalUploadedFiles] = useState(0);
   const [tuFiles, setTuFiles] = useState(0);
   const [totalUploadedFolder, setTotalUploadedFolder] = useState(0);
@@ -131,11 +131,12 @@ const renameAttachment = async (newFilename, id) => {
   }
 };
 const clearFolders = () => {
-  setFolderName([]);
+  setFolders([]);
 } 
-const creatFolder = async () => {
+const creatFolder = async (folderName) => {
   try {
     const response = await axios.post('http://localhost:8080/api/user/folders/create', {
+      folders,
       folderName
     });
     fetchUserInfo(token);
@@ -167,7 +168,7 @@ const deleteFolder = async (name) => {
     await axios.delete(`http://localhost:8080/api/user/folders/delete/${name}`);
     message.success('Folder deleted successfully.');
     await fetchUserInfo(token);
-    setFolderName([]);
+    setFolders([]);
   } catch (err) {
     message.error('Something went wrong.');
     console.error(err);
