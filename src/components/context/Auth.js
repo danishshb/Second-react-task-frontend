@@ -12,7 +12,6 @@ const AuthenticationContext = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [attachments, setAttachments] = useState([]);
   const [folders, setFolders] = useState([]);
-  // const [folderName, setFolderName] = useState([]);
   const [totalUploadedFiles, setTotalUploadedFiles] = useState(0);
   const [tuFiles, setTuFiles] = useState(0);
   const [totalUploadedFolder, setTotalUploadedFolder] = useState(0);
@@ -21,7 +20,6 @@ const AuthenticationContext = ({ children }) => {
 
   const MAX_ATTACHMENTS = 5;
   const MAX_FILE_SIZE_MB = 50;
-  // const MAX_FOLDER_SIZE_GB = 50; 
 
   const handleAttachments = (files) => {
     if (files?.length > MAX_ATTACHMENTS) {
@@ -54,7 +52,7 @@ const AuthenticationContext = ({ children }) => {
         formData.append('attachments', attachments[i]);
       }
 
-      await axios.put('http://localhost:8080/api/user/attachments', formData);
+      await axios.put('http://209.38.164.171/api/user/attachments', formData);
       message.success("Attachments uploaded successfully.");
 
       fetchUserInfo(token);
@@ -66,7 +64,7 @@ const AuthenticationContext = ({ children }) => {
   const handleDownloadAttachment = async (fn, fp) => {
     try {
       const filepath = fp?.replace(/^src\\data\\/, "");
-      const url = `http://localhost:8080/api/user/download/${filepath}`;
+      const url = `http://209.38.164.171/api/user/download/${filepath}`;
 
       const res = await axios.get(url, { responseType: "blob" });
       if (res.status !== 200) {
@@ -88,7 +86,7 @@ const AuthenticationContext = ({ children }) => {
   };
   const deleteAttachment = async (filename) => {
     try {
-      await axios.delete(`http://localhost:8080/api/user/attachments/${filename}`);
+      await axios.delete(`http://209.38.164.171/api/user/attachments/${filename}`);
       message.success('Attachment deleted successfully.');
       await fetchUserInfo(token);
       setAttachments([]);
@@ -100,7 +98,7 @@ const AuthenticationContext = ({ children }) => {
   const fetchUserInfo = async (token) => {
     if (token) {
       try {
-        const res = await axios.get("http://localhost:8080/api/user/info");
+        const res = await axios.get("http://209.38.164.171/api/user/info");
         setUserData(res?.data?.user);
         setTotalUploadedFiles(res?.data?.user?.attachments?.length || 0);
         setTuFiles(res?.data?.user?.attachments?.length || 1)
@@ -114,7 +112,7 @@ const AuthenticationContext = ({ children }) => {
   };
 const renameAttachment = async (newFilename, id) => {
   try {
-    await axios.post(`http://localhost:8080/api/user/rename/${id}`, {
+    await axios.post(`http://209.38.164.171/api/user/rename/${id}`, {
       newFilename,
     });
     message.success('File renamed successfully.');
@@ -135,7 +133,7 @@ const clearFolders = () => {
 } 
 const creatFolder = async (folderName) => {
   try {
-    const response = await axios.post('http://localhost:8080/api/user/folders/create', {
+    const response = await axios.post('http://209.38.164.171/api/user/folders/create', {
       folders,
       folderName
     });
@@ -147,7 +145,7 @@ const creatFolder = async (folderName) => {
 };
 const renameFolder = async (id, newFolderName) => {
   try {
-    const response = await axios.put(`http://localhost:8080/api/user/folders/rename/${id}`, {
+    const response = await axios.put(`http://209.38.164.171/api/user/folders/rename/${id}`, {
       newFolderName
     });
 
@@ -165,7 +163,7 @@ const renameFolder = async (id, newFolderName) => {
 };
 const deleteFolder = async (name) => {
   try {
-    await axios.delete(`http://localhost:8080/api/user/folders/delete/${name}`);
+    await axios.delete(`http://209.38.164.171/api/user/folders/delete/${name}`);
     message.success('Folder deleted successfully.');
     await fetchUserInfo(token);
     setFolders([]);

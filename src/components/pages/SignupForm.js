@@ -27,7 +27,8 @@ const SignupForm = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/user/register",
+        // "http://localhost:8080/api/user/register",
+        "http://209.38.164.171/api/user/register",
         signUpInfo
       );
       message.success(res?.data?.message);

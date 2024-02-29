@@ -16,7 +16,7 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:8080/api/user/reset-password/${token}`, { 
+      await axios.post(`http://209.38.164.171/api/user/reset-password/${token}`, { 
         changePassword
       });
       message.success(

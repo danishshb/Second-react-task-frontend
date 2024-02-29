@@ -31,7 +31,8 @@ function Profile() {
         }
 
         const res = await axios.put(
-          'http://localhost:8080/api/user/update',
+          // 'http://localhost:8080/api/user/update',
+          'http://209.38.164.171/api/user/update',
           formData
         );
 
@@ -87,7 +88,7 @@ function Profile() {
 
   useEffect(() => {
     if (userData && userData.profileImage && userData.profileImage.filePath) {
-      setPreviewImage(`http://localhost:8080/${userData.profileImage.filePath}`);
+      setPreviewImage(`http://209.38.164.171/${userData.profileImage.filePath}`);
     }
   }, [userData]);
 
